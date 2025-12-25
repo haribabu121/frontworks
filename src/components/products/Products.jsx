@@ -1,10 +1,88 @@
-import React, { useState, useEffect } from "react";
-import { FaStar, FaArrowRight, FaTimes } from "react-icons/fa";
+import React, { useState, useEffect, useRef } from "react";
+import { FaStar, FaArrowRight, FaTimes, FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { Calendar, dateFnsLocalizer, Views } from "react-big-calendar";
-import { format, parse, startOfWeek, getDay } from "date-fns";
+import { format, parse, startOfWeek, getDay, isSameDay } from "date-fns";
 import { enUS } from "date-fns/locale/en-US";
 import emailjs from "emailjs-com";
 import "react-big-calendar/lib/css/react-big-calendar.css";
+
+// Add custom styles for mobile
+const customStyles = `
+  .rbc-month-view, .rbc-time-view, .rbc-agenda-view {
+    min-height: 400px;
+  }
+  
+  .rbc-month-row {
+    min-height: 80px;
+  }
+  
+  .rbc-day-bg, .rbc-header, .rbc-header + .rbc-header {
+    border: 1px solid #e2e8f0;
+  }
+  
+  .rbc-today {
+    background-color: #fef9c3;
+  }
+  
+  .rbc-off-range-bg {
+    background: #f8fafc;
+  }
+  
+  .rbc-month-view .rbc-date-cell {
+    padding: 4px;
+    text-align: center;
+  }
+  
+  .rbc-date-cell.rbc-now {
+    font-weight: bold;
+    color: #d97706;
+  }
+  
+  .rbc-event {
+    background-color: #f59e0b;
+    border-radius: 4px;
+    padding: 2px 4px;
+    color: white;
+    font-size: 12px;
+    text-align: center;
+  }
+  
+  /* Mobile optimizations */
+  @media (max-width: 768px) {
+    .rbc-toolbar {
+      flex-direction: column;
+      gap: 8px;
+    }
+    
+    .rbc-toolbar .rbc-toolbar-label {
+      margin: 8px 0;
+    }
+    
+    .rbc-month-view {
+      min-height: 70vh;
+    }
+    
+    .rbc-month-row {
+      min-height: 12vh;
+    }
+    
+    .rbc-date-cell {
+      min-height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .rbc-day-bg {
+      cursor: pointer;
+      -webkit-tap-highlight-color: rgba(0,0,0,0.1);
+    }
+    
+    .rbc-day-bg:active {
+      background-color: #f0f9ff;
+    }
+  }
+`;
 
 const localizer = dateFnsLocalizer({
   format,
@@ -14,16 +92,64 @@ const localizer = dateFnsLocalizer({
   locales: { "en-US": enUS },
 });
 
-const CustomToolbar = ({ label, onNavigate }) => (
-  <div className="rbc-toolbar flex items-center justify-between mb-3">
-    <button className="rbc-btn" onClick={() => onNavigate("TODAY")}>Today</button>
-    <div className="flex items-center gap-4">
-      <button className="rbc-btn" onClick={() => onNavigate("PREV")}>Back</button>
-      <span>{label}</span>
-      <button className="rbc-btn" onClick={() => onNavigate("NEXT")}>Next</button>
+const CustomToolbar = ({ label, onNavigate, onView }) => {
+  const [touchStart, setTouchStart] = useState(0);
+  const [touchEnd, setTouchEnd] = useState(0);
+  const minSwipeDistance = 50;
+
+  const onTouchStart = (e) => {
+    setTouchEnd(0);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const onTouchMove = (e) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const onTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > minSwipeDistance;
+    const isRightSwipe = distance < -minSwipeDistance;
+
+    if (isLeftSwipe) onNavigate("NEXT");
+    if (isRightSwipe) onNavigate("PREV");
+  };
+
+  return (
+    <div 
+      className="rbc-toolbar flex flex-col sm:flex-row items-center justify-between gap-2 mb-3"
+      onTouchStart={onTouchStart}
+      onTouchMove={onTouchMove}
+      onTouchEnd={onTouchEnd}
+    >
+      <button 
+        className="rbc-btn bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600 transition-colors" 
+        onClick={() => onNavigate("TODAY")}
+      >
+        Today
+      </button>
+      <div className="flex items-center gap-2 sm:gap-4">
+        <button 
+          className="rbc-btn p-1 sm:p-2 rounded-full hover:bg-gray-100"
+          onClick={() => onNavigate("PREV")}
+          aria-label="Previous month"
+        >
+          <FaChevronLeft className="text-yellow-600" />
+        </button>
+        <span className="font-medium text-sm sm:text-base">{label}</span>
+        <button 
+          className="rbc-btn p-1 sm:p-2 rounded-full hover:bg-gray-100"
+          onClick={() => onNavigate("NEXT")}
+          aria-label="Next month"
+        >
+          <FaChevronRight className="text-yellow-600" />
+        </button>
+      </div>
+      <style jsx>{customStyles}</style>
     </div>
-  </div>
-);
+  );
+};
 
 const showAlert = (message) => alert(message);
 
@@ -122,7 +248,22 @@ const Products = () => {
   };
 
   const handleSelectSlot = ({ start }) => {
-    processDateSelection(start);
+    // Add a small delay to improve touch feedback
+    const selectedCell = document.querySelector('.rbc-day-bg.rbc-selected-cell');
+    if (selectedCell) {
+      selectedCell.style.transition = 'background-color 0.2s';
+      selectedCell.style.backgroundColor = '#fef9c3';
+      
+      setTimeout(() => {
+        if (selectedCell) {
+          selectedCell.style.transition = 'background-color 0.3s';
+          selectedCell.style.backgroundColor = '';
+        }
+        processDateSelection(start);
+      }, 150);
+    } else {
+      processDateSelection(start);
+    }
   };
 
   /** ---------------------------
@@ -573,20 +714,58 @@ const Products = () => {
               <FaTimes className="cursor-pointer" onClick={() => setShowCalendar(false)} />
             </div>
 
-            <Calendar
-              date={currentDate}
-              onNavigate={(date) => setCurrentDate(date)}
-              localizer={localizer}
-              events={events}
-              selectable
-              startAccessor="start"
-              endAccessor="end"
-              onSelectSlot={handleSelectSlot}
-              components={{ toolbar: CustomToolbar }}
-              defaultView={Views.MONTH}
-              views={[Views.MONTH]}
-              style={{ minHeight: "300px", maxHeight: "80vh" }}
-            />
+            <div className="w-full overflow-auto">
+              <Calendar
+                date={currentDate}
+                onNavigate={(date) => setCurrentDate(date)}
+                localizer={localizer}
+                events={events}
+                selectable
+                startAccessor="start"
+                endAccessor="end"
+                onSelectSlot={handleSelectSlot}
+                components={{
+                  toolbar: (props) => <CustomToolbar {...props} />,
+                  month: {
+                    dateHeader: ({ date, label }) => {
+                      const isToday = isSameDay(date, new Date());
+                      const isSelected = isSameDay(date, currentDate);
+                      return (
+                        <div 
+                          className={`rbc-date-cell ${isToday ? 'rbc-now' : ''} ${isSelected ? 'bg-yellow-100' : ''}`}
+                          style={{
+                            width: '100%',
+                            height: '100%',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            borderRadius: '50%',
+                            aspectRatio: '1/1',
+                            margin: '0 auto',
+                            maxWidth: '36px',
+                          }}
+                        >
+                          {label}
+                        </div>
+                      );
+                    },
+                  },
+                }}
+                defaultView={Views.MONTH}
+                views={[Views.MONTH]}
+                style={{ 
+                  minHeight: "300px",
+                  maxHeight: "80vh",
+                  '--cell-size': '40px',
+                }}
+                dayPropGetter={(date) => ({
+                  style: {
+                    minHeight: '60px',
+                    cursor: 'pointer',
+                  },
+                })}
+              />
+            </div>
           </div>
         </div>
       )}
