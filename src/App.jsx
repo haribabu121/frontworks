@@ -25,13 +25,12 @@ import ThankYou from './components/booking/ThankYou';
 function App() {
   return (
     <Router>
-      <div className="min-h-screen pb-24">
-        {/* <AnnouncementBar/> */}
+      <div className="min-h-screen flex flex-col bg-gray-50">
         <Navbar />
-        <main className="pt-16">
+        <main className="flex-grow pt-16">
           <Routes>
             <Route path="/" element={
-              <div className="bg-gray-50">
+              <>
                 <Hero />
                 <About />
                 <ExecutiveTeam/>
@@ -40,93 +39,50 @@ function App() {
                 <Events />
                 <FAQSection/>
                 <Contact />
-                <Footer />
-              </div>
+              </>
             } />
             <Route path="/contact" element={
-              <div className="bg-gray-50">
-                <ContactForm />
-                <Footer />
-              </div>
+              <ContactForm />
             } />
             <Route path="/events" element={
-              <div className="bg-gray-50">
-                <EventsPage />
-                <Footer />
-              </div>
+              <EventsPage />
             } />
             <Route path="/select-items" element={
-              <div className="bg-gray-50 min-h-screen">
+              <div className="min-h-[calc(100vh-4rem)]">
                 <ItemSelection />
-                <Footer />
               </div>
             } />
-            
             <Route path="/services/cloud-effects" element={
-              <div className="bg-gray-50">
-                <CloudEffects />
-                <Footer />
-              </div>
+              <CloudEffects />
             } />
             <Route path="/services/luxury-wedding" element={
-              <div className="bg-gray-50">
-                <LuxuryWedding />
-                <Footer />
-              </div>
+              <LuxuryWedding />
             } />
             <Route path="/services/grand-entry" element={
-              <div className="bg-gray-50">
-                <GrandEntry />
-                <Footer />
-              </div>
+              <GrandEntry />
             } />
             <Route path="/services/venue-decoration" element={
-              <div className="bg-gray-50">
-                <VenueDecoration />
-                <Footer />
-              </div>
+              <VenueDecoration />
             } />
             <Route path="/services/fireworks" element={
-              <div className="bg-gray-50">
-                <Fireworks />
-                <Footer />
-              </div>
+              <Fireworks />
             } />
             <Route path="/services/sound-light-visual" element={
-              <div className="bg-gray-50">
-                <SoundLightVisual />
-                <Footer />
-              </div>
+              <SoundLightVisual />
             } />
             <Route path="/events/:eventId" element={
               <div className="bg-white">
                 <EventsPage />
-                <Footer />
               </div>
             } />
-            <Route path="/select-items" element={
-              <div className="bg-gray-50 min-h-screen">
-                <ItemSelection />
-                <Footer />
-              </div>
-            } />
-            {/* <Route
-              path="/payment"
-              element={
-                <div className="bg-gray-50 min-h-screen">
-                  <Payment />
-                  <Footer />
-                </div>
-              }
-            /> */}
             <Route path="/thank-you" element={
-              <div className="bg-yellow-50 min-h-screen">
+              <div className="min-h-[calc(100vh-4rem)] bg-yellow-50">
                 <ThankYou />
-                <Footer />
               </div>
             } />
           </Routes>
         </main>
+        <Footer />
         <Detail />
       </div>
     </Router>

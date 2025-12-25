@@ -72,9 +72,14 @@ const Footer = () => {
             </form>
           </div>
         </div>
-        <div className="border-t border-white-100 mt-10 pt-8 text-sm text-center">
-          <p>&copy; {new Date().getFullYear()} AK Events & Fireworks. All rights reserved.</p>
-          <p className="mt-2 text-xs text-gray-500">Follow us on Instagram @akeventsandfireworks</p>
+        <div className="mt-6 text-sm text-center">
+          <div className="border-t-2 border-white pt-4">
+            <p className="mb-2">&copy; {new Date().getFullYear()} AK Events & Fireworks. All rights reserved.</p>
+            <p className="text-xs text-gray-500">
+              <FaInstagram className="inline mr-1 text-pink-500" />
+              Follow us on Instagram @akeventsandfireworks
+            </p>
+          </div>
         </div>
       </div>
     </footer>

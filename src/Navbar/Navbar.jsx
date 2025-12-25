@@ -41,32 +41,39 @@ import { GiSparkles, GiFlowers, GiFireworkRocket } from "react-icons/gi";
 
 import Logo from './Logo.png';
 
-const MarqueeText = () => (
-  <div className="bg-yellow-500 text-white py-2 overflow-hidden w-full z-50 relative">
-    <div className="whitespace-nowrap w-max">
-      <div className="inline-block animate-marquee whitespace-nowrap px-4">
-        <span className="mx-4 font-medium"><FaStar className="inline mr-2" />🎉 Special discount on wedding packages this month!</span>
-        <span className="mx-4 font-medium"><GiFireworkRocket className="inline mr-2" />✨ Book your event now and get 10% off on all services</span>
-        <span className="mx-4 font-medium"><FaFireAlt className="inline mr-2" />🔥 Limited time offer: Free decoration with every booking</span>
+const MarqueeText = () => {
+  const announcement = "✨ Book now and get 10% off on all services! Limited time offer: Free decoration with every booking! ✨";
+  
+  return (
+    <div className="bg-yellow-500 text-black py-2 overflow-hidden w-full z-50 relative">
+      <div className="whitespace-nowrap w-full">
+        <div className="inline-block whitespace-nowrap animate-marquee">
+          {[...Array(4)].map((_, i) => (
+            <span key={i} className="mx-8 font-medium">
+              {announcement}
+            </span>
+          ))}
+        </div>
       </div>
-    </div>
-    <style jsx>{`
-      @keyframes marquee {
-        0% { transform: translateX(0); }
-        100% { transform: translateX(-50%); }
-      }
-      .animate-marquee {
-        display: inline-block;
-        animation: marquee 20s linear infinite;
-      }
-      @media (max-width: 768px) {
-        .animate-marquee {
-          animation-duration: 30s;
+      <style jsx>{`
+        @keyframes marquee {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
         }
-      }
-    `}</style>
-  </div>
-);
+        .animate-marquee {
+          display: inline-block;
+          animation: marquee 25s linear infinite;
+          will-change: transform;
+        }
+        @media (max-width: 768px) {
+          .animate-marquee {
+            animation-duration: 35s;
+          }
+        }
+      `}</style>
+    </div>
+  );
+};
 
 const Navbar = () => {
   return (
