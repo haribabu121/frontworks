@@ -29,7 +29,7 @@ const ContactForm = () => {
     
     try {
       // Make API call to submit the form
-      const response = await axios.post('https://workend-dr6j6re42-haribabu121s-projects.vercel.app/api/connect', formData, {
+      const response = await axios.post('https://workend-czb475tk6-haribabu121s-projects.vercel.app/api/connect', formData, {
         headers: {
           'Content-Type': 'application/json',
         },
