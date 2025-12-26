@@ -31,7 +31,7 @@ const Contact = () => {
 
     try {
       const response = await axios.post(
-        "https://vercel.com/haribabu121s-projects/workend/B5rN2ntVKp4i3r3qqhWjWWyCZMct",
+        "https://workend-dr6j6re42-haribabu121s-projects.vercel.app",
         formData,
         { headers: { "Content-Type": "application/json" } }
       );
