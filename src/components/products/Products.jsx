@@ -307,7 +307,7 @@ const Products = () => {
       price: "6000",
       rating: 4.9,
       description: "Powerful flame machine with strong visuals.",
-      image: "https://image.made-in-china.com/2f0j00vzoUnSiaJTqY/DJ-Party-Show-200W-Colorful-Firing-Machine-Stage-Effect-Fire-Flame-Machine.jpg"
+      image: "https://5.imimg.com/data5/NR/MV/DM/SELLER-31673312/flame-fire-machine.jpg"
     },
     {
       id: 3,
